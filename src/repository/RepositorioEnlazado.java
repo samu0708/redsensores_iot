@@ -128,7 +128,7 @@ public class RepositorioEnlazado implements Repositorio {
     // =========================================================
 
     /** Cuenta los nodos recorriendo la cadena de verdad, eslabon a eslabon.
-        Sirve para verificar si el atributo 'cantidad' está diciendo la verdad. */
+     Sirve para verificar si el atributo 'cantidad' está diciendo la verdad. */
     public int contarRecorriendo() {
         int contador = 0;
         Nodo actual = primero;
@@ -137,6 +137,27 @@ public class RepositorioEnlazado implements Repositorio {
             actual = actual.getSiguiente();
         }
         return contador;
+    }
+
+    /**
+     * Recorre la lista UNA sola vez, nodo por nodo, avanzando con
+     * un nodo "actual" (sin llamar a obtener(i) en cada vuelta).
+     * Cuenta un salto por cada enlace que se sigue: visitar n nodos
+     * cuesta n-1 saltos, es decir O(n).
+     *
+     * @return cuantos nodos visito
+     */
+    public int recorrerNodoPorNodo() {
+        int visitados = 0;
+        Nodo actual = primero;
+        while (actual != null) {
+            visitados++;
+            actual = actual.getSiguiente();
+            if (actual != null) {
+                saltos++;
+            }
+        }
+        return visitados;
     }
 
     /** Búsqueda lineal por timestamp, recorriendo la cadena. */
