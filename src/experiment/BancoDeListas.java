@@ -18,10 +18,10 @@ public class BancoDeListas {
 
     public static void main(String[] args) {
         experimentoUno();
-        // experimentoDos();     // <- FASE 2
-        // experimentoTres();    // <- FASE 3
-        // experimentoCuatro(); // <- FASE 4
-        // experimentoCinco();   // <- FASE 5
+        experimentoDos();
+        experimentoTres();
+        experimentoCuatro();
+        experimentoCinco();
     }
 
     // ---------- EXPERIMENTO 1 ----------
@@ -102,8 +102,9 @@ public class BancoDeListas {
     private static void experimentoCuatro() {
         System.out.println("=== EXP 4: RECORRER POR POSICION ===");
         int[] tamanos = {1_000, 10_000, 50_000};
-        System.out.printf("%10s | %14s %8s | %16s %8s%n",
-                "lecturas", "arreglo: acc.", "ms", "lista: saltos", "ms");
+        System.out.printf("%10s | %14s %8s | %16s %8s | %16s %8s%n",
+                "lecturas", "arreglo: acc.", "ms", "lista: saltos", "ms",
+                "nodo a nodo", "ms");
 
         for (int n : tamanos) {
             LecturaSensor[] datos = GeneradorDatos.generar(n);
@@ -121,12 +122,22 @@ public class BancoDeListas {
             for (int i = 0; i < n; i++) lista.obtener(i);
             long msLista = System.currentTimeMillis() - t;
 
-            System.out.printf("%,10d | %,14d %,8d | %,16d %,8d%n",
-                    n, (long) n, msArreglo, RepositorioEnlazado.getSaltos(), msLista);
+            long saltosPorPosicion = RepositorioEnlazado.getSaltos();
+
+            // El recorrido correcto: un nodo "actual" que avanza una sola vez.
+            RepositorioEnlazado.reiniciarSaltos();
+            t = System.currentTimeMillis();
+            lista.recorrerNodoPorNodo();
+            long msNodoANodo = System.currentTimeMillis() - t;
+
+            System.out.printf("%,10d | %,14d %,8d | %,16d %,8d | %,16d %,8d%n",
+                    n, (long) n, msArreglo, saltosPorPosicion, msLista,
+                    RepositorioEnlazado.getSaltos(), msNodoANodo);
         }
         System.out.println();
         System.out.println("El ciclo 'for (i=0; i<n; i++) obtener(i)' se ve identico en los dos casos.");
         System.out.println("Compara la columna de saltos con la de accesos.");
+        System.out.println("La ultima columna recorre la lista con un nodo 'actual': n-1 saltos, O(n).");
         System.out.println();
     }
 
